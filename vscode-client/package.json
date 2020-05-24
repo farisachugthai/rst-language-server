@@ -1,80 +1,93 @@
 {
-    "name": "rst-language-server",
-    "description": "ReStructuredText language server",
-    "author": "Sourcegraph",
-    "repository": "https://github.com/chrisjsewell/rst-language-server",
-    "license": "MIT",
-    "version": "0.0.1",
-    "publisher": "chrisjsewell",
-    "engines": {
-        "vscode": "^1.38.0"
-    },
-    "categories": [
-        "Programming Languages"
-    ],
-    "activationEvents": [
-        "onLanguage:restructuredtext"
-    ],
-    "contributes": {
-        "languages": [
-            {
-                "id": "restructuredtext",
-                "aliases": [
-                    "reStructuredText",
-                    "restructuredtext",
-                    "ReStructured Text",
-                    "reStructured Text",
-                    "RST",
-                    "ReST",
-                    "reST"
-                ],
-                "extensions": [
-                    ".rst",
-                    ".rest"
-                ],
-                "configuration": "./language-configuration.json"
-            }
-        ],
-        "grammars": [
-            {
-                "language": "restructuredtext",
-                "scopeName": "text.restructuredtext",
-                "path": "./syntaxes/restructuredtext.tmLanguage"
-            }
-        ],
-        "configuration": {
-            "title": "RST Language Server Configuration",
-            "type": "object",
-            "properties": {
-                "rst_lsp.executable": {
-                    "type": "string",
-                    "default": "//anaconda/envs/rst-lsp/bin/rst-lsp-serve",
-                    "description": "Language server executable"
-                },
-                "rst_lsp.conf_path": {
-                    "type": ["string", "null"],
-                    "default": null,
-                    "pattern": ".*conf\\.py$",
-                    "description": "The path to the sphinx conf.py file."
-                }
-            }
+  "activationEvents": [
+    "onLanguage:restructuredtext"
+  ],
+  "author": "Sourcegraph",
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "configuration": {
+      "properties": {
+        "rst_lsp.conf_path": {
+          "default": null,
+          "description": "The path to the sphinx conf.py file.",
+          "pattern": ".*conf\\.py$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rst_lsp.executable": {
+          "default": "//anaconda/envs/rst-lsp/bin/rst-lsp-serve",
+          "description": "Language server executable",
+          "type": "string"
         }
+      },
+      "title": "RST Language Server Configuration",
+      "type": "object"
     },
-    "main": "./out/extension",
-    "scripts": {
-        "vscode:prepublish": "tsc -p ./",
-        "compile": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "vscode": "npm run vscode:prepublish && VSCODE=$(which code-insiders || which code || echo echo ERROR: neither the code nor code-insiders vscode executable is installed); USER=dummy-dont-share-vscode-instance $VSCODE --user-data-dir=$PWD/.vscode-dev/user-data --extensionHomePath=$PWD/.vscode-dev/extensions --extensionDevelopmentPath=$PWD $*"
-    },
-    "devDependencies": {
-        "typescript": "^2.3.4",
-        "vscode": "^1.1.4",
-        "mocha": "^2.3.3",
-        "@types/node": "^6.0.40",
-        "@types/mocha": "^2.2.32"
-    },
-    "dependencies": {
-        "vscode-languageclient": "^5.2.1"
-    }
+    "grammars": [
+      {
+        "language": "restructuredtext",
+        "path": "./syntaxes/restructuredtext.tmLanguage",
+        "scopeName": "text.restructuredtext"
+      }
+    ],
+    "languages": [
+      {
+        "aliases": [
+          "reStructuredText",
+          "restructuredtext",
+          "ReStructured Text",
+          "reStructured Text",
+          "RST",
+          "ReST",
+          "reST"
+        ],
+        "configuration": "./language-configuration.json",
+        "extensions": [
+          ".rst",
+          ".rst.txt",
+          ".rest"
+        ],
+        "id": "reStructuredText"
+      }
+    ]
+  },
+  "dependencies": {
+    "vscode-languageclient": "^6.1.1",
+    "vscode-languageserver": "^6.1.1"
+  },
+  "description": "ReStructuredText language server",
+  "devDependencies": {
+    "@types/mocha": "^2.2.32",
+    "@types/node": "^6.0.40",
+    "@types/vscode": "^1.45.0",
+    "eslint": "^7.0.0",
+    "typescript": "^2.7.4",
+    "vscode-languageserver-textdocument": "^1.0.1",
+    "vscode-nls": "latest",
+    "webpack": "latest",
+    "webpack-cli": "latest"
+  },
+  "engines": {
+    "vscode": "^1.38.0"
+  },
+  "license": "MIT",
+  "main": "./out/extension",
+  "name": "rst-language-server",
+  "publisher": "chrisjsewell",
+  "repository": "https://github.com/chrisjsewell/rst-language-server",
+  "scripts": {
+    "build": "yarn run webpack -dw rplugin/node/coc_tag.js",
+    "build:watch": "tsc --watch -p tsconfig.json",
+    "clean": "yarn autoclean --force",
+    "compile": "tsc -watch -p ./",
+    "lint": "yarn run tslint --fix **.ts",
+    "pretest": "echo 'Running tests'",
+    "vscode": "npm run vscode:prepublish && VSCODE=$(which code-insiders || which code || echo echo ERROR: neither the code nor code-insiders vscode executable is installed); USER=dummy-dont-share-vscode-instance $VSCODE --user-data-dir=$PWD/.vscode-dev/user-data --extensionHomePath=$PWD/.vscode-dev/extensions --extensionDevelopmentPath=$PWD $*",
+    "vscode:prepublish": "tsc -p ./"
+  },
+  "version": "0.0.1"
 }

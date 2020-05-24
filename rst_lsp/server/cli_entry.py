@@ -9,7 +9,7 @@ import logging
 import logging.config
 import sys
 
-from .jsonrpc import RstLanguageServer, start_io_lang_server, start_tcp_lang_server
+from rst_lsp.server.jsonrpc import RstLanguageServer, start_io_lang_server, start_tcp_lang_server
 
 LOG_FORMAT = "%(asctime)s UTC - %(levelname)s - %(name)s - %(message)s"
 

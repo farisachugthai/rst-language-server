@@ -3,12 +3,12 @@ from contextlib import contextmanager
 from inspect import getdoc
 import os
 from sqlite3 import Connection as SQLite3Connection
-from typing import List, NamedTuple, Optional, Type
+from typing import List, NamedTuple, Optional, Type, AnyStr
 
 import sqlalchemy as sqla
 from sqlalchemy.orm import scoped_session, sessionmaker, Session
 
-from .models import (  # noqa: F401
+from rst_lsp.database.models import (  # noqa: F401
     OrmBase,
     OrmConfigurationFile,
     OrmDirective,
@@ -30,7 +30,7 @@ def _set_sqlite_pragma(dbapi_connection, connection_record):
         cursor.close()
 
 
-def get_role_kwargs(name: str, role: Type) -> dict:
+def get_role_kwargs(name: AnyStr, role: Type) -> dict:
     return {
         "name": name,
         "description": getdoc(role) or "",
@@ -40,7 +40,7 @@ def get_role_kwargs(name: str, role: Type) -> dict:
 
 def get_directive_kwargs(name, direct) -> dict:
     options = (
-        {k: str(v.__name__) for k, v in direct.option_spec.items()}
+        {k: AnyStr(v.__name__) for k, v in direct.option_spec.items()}
         if direct.option_spec
         else {}
     )
@@ -59,7 +59,7 @@ def get_directive_kwargs(name, direct) -> dict:
 
 class DocutilsCache:
     def __init__(
-        self, db_folder_path: str, db_file_name: str = "docutils.db", **kwargs
+        self, db_folder_path: AnyStr, db_file_name: AnyStr = "docutils.db", **kwargs
     ):
         self._db_path = os.path.join(db_folder_path, db_file_name)
         self._engine = sqla.create_engine(f"sqlite:///{self._db_path}", **kwargs)
@@ -187,7 +187,7 @@ class DocutilsCache:
                 session.expunge(orm)
         return orm
 
-    def query_role(self, name: str, allow_removed=False) -> Optional[OrmRole]:
+    def query_role(self, name: AnyStr, allow_removed=False) -> Optional[OrmRole]:
         with self.context_session() as session:  # type: Session
             filters = [OrmRole.name == name]
             if not allow_removed:
@@ -206,7 +206,7 @@ class DocutilsCache:
             )
         return result
 
-    def query_directive(self, name: str, allow_removed=False) -> Optional[OrmDirective]:
+    def query_directive(self, name: AnyStr, allow_removed=False) -> Optional[OrmDirective]:
         with self.context_session() as session:  # type: Session
             filters = [OrmDirective.name == name]
             if not allow_removed:
@@ -231,7 +231,7 @@ class DocutilsCache:
 
     def update_doc(
         self,
-        uri: str,
+        uri: AnyStr,
         mtime: datetime,
         doc_symbols: List[dict],
         *,
@@ -302,7 +302,7 @@ class DocutilsCache:
                     session.bulk_insert_mappings(orm_class, new_dicts)
 
     def query_doc(
-        self, uri: str, load_lints: bool = False, load_positions: bool = False
+        self, uri: AnyStr, load_lints: bool = False, load_positions: bool = False
     ) -> Optional[OrmDocument]:
         with self.context_session() as session:  # type: Session
             query = session.query(OrmDocument).filter_by(uri=uri)
@@ -317,7 +317,7 @@ class DocutilsCache:
 
     def query_positions(
         self,
-        uri: str,
+        uri: AnyStr,
         filters_equal: Optional[dict] = None,
         filters_in: Optional[dict] = None,
     ) -> List[NamedTuple]:
@@ -334,7 +334,7 @@ class DocutilsCache:
 
     def query_at_position(
         self,
-        uri: str,
+        uri: AnyStr,
         line: int,
         character: int,
         filters_equal: Optional[dict] = None,

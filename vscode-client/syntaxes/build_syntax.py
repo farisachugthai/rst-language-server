@@ -1,15 +1,29 @@
 #!/usr/bin/env python
 import os
-import plistlib
+import sys
+
+from pathlib import Path
 
 import yaml
 
-if __name__ == "__main__":
-    in_path = os.path.join(
-        os.path.dirname(__file__), "restructuredtext.tmLanguage.yaml"
-    )
-    out_path = os.path.join(os.path.dirname(__file__), "restructuredtext.tmLanguage")
-    with open(in_path) as fp:
+
+def mac_outfile(out, syn):
+    import plistlib
+    with open(out, "wb") as fp:
+        plistlib.dump(syn, fp)
+
+
+def main():
+    current_dir = Path(os.path.abspath(os.path.dirname(__file__)))
+    in_path = current_dir.joinpath("restructuredtext.tmLanguage.yaml")
+    out_path = current_dir.joinpath("restructuredtext.tmLanguage")
+    with open(in_path, "rt") as fp:
         syntax = yaml.safe_load(fp)
-    with open(out_path, "wb") as fp:
-        plistlib.dump(syntax, fp)
+
+    if sys.platform.startswith('osx'):  # is this right?
+        mac_outfile(out_path, syntax)
+    import pdb; pdb.set_trace()
+
+
+if __name__ == "__main__":
+    main()

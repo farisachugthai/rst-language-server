@@ -2,29 +2,37 @@ from importlib import import_module
 
 from setuptools import setup, find_packages
 
+try:
+    version = import_module("rst_lsp").__version__
+except ImportError:
+    version = "0.0.4"
 
 setup(
     name="rst-language-server",
-    version=import_module("rst_lsp").__version__,
+    version=version,
     author="Chris Sewell",
-    packages=find_packages(),
+    packages=find_packages(""),
     install_requires=[
-        "attrs>=19,<20",
-        "sphinx>=2.2,<3",
-        "docutils>=0.15.2,<0.16",
+        "attrs>=19",
+        "docutils>=0.15.2",
+        "jedi>=0.15",
+        "pluggy>=0.13",
+        "python-jsonrpc-server>0.3",
         "pyyaml",
-        "sqlalchemy>=1.3,<2",
-        'typing-extensions; python_version<"3.8"',
+        "setuptools",
+        "sphinx>=2.2",
+        "sqlalchemy>=1.3",
+        "ujson",  # pyls json
+        'typing-extensions',
+        "wheel",
     ],
     extras_require={
-        "jsonrpc": ["python-jsonrpc-server>0.3,<0.4", "pluggy>=0.13,<0.14"],
-        "python_plugins": ["jedi>=0.15", "black>=19,<20"],
-        "testing": ["pytest>5,<6", "pytest-regressions", "sphinxcontrib-bibtex>=1.0.0"],
-        "code_style": ["black==19.3b0", "pre-commit==1.17.0", "flake8<3.8.0,>=3.7.0"],
+        "testing": ["pytest>5", "pytest-regressions", "sphinxcontrib-bibtex>=1.0.0"],
+        "code_style": ["black", "pre-commit==1.17.0", "flake8<3.8.0"],
     },
     entry_points={
         "console_scripts": [
-            "rst-lsp-cli=rst_lsp.click_cli:cli_entry",
+            "rst-lsp-cli=rst_lsp.server:cli_entry",
             "rst-lsp-serve=rst_lsp.server.cli_entry:main",
         ],
         "rst_lsp": [
